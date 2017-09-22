@@ -1,31 +1,36 @@
 body {
-  margin:0 auto;
-  background:url("http://www.uefa.com/MultimediaFiles/Photo/competitions/Draws/02/27/60/30/2276030_w1.jpg");
-
+  margin: 0 auto;
+  background: url("http://www.uefa.com/MultimediaFiles/Photo/competitions/Draws/02/27/60/30/2276030_w1.jpg");
 }
 
-#css_main{
+#css_main {
 	margin-top: 0px;
-	border:2px solid black;
+	border: 2px solid black;
 	height: 500px;
 	text-align: center;
 }
 
-#js_search_results{
+#js_search_results {
 	background-color: gray;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-.jumbotron{
+.jumbotron {
 	text-align: center;
 }
 
-.competition{
+.competition {
 	background-color: green;
 	bottom: 0px;
 }
 
-.list-group{
+.list-group {
 	width: 60%;
+	margin-left: auto;
+	margin-right: auto;	
+}
+
+ul {
+	padding-left: 0;
 }
