@@ -9,7 +9,6 @@ function renderResult(result) {
     let len = result.length;
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <h1>List of Competitions </h1>
     <ol class="carousel-indicators competition" >`
     for(let i=0; i<len; i++) {
         if (i === 0) {
@@ -30,24 +29,26 @@ function renderResult(result) {
             html += `<div class="item ">`
         }
         html += `
+            <img src="http://www.mannersmattercanada.com/Blank_World_Map.jpg" alt="" class="img-responsive imageItem">
+            <div class="carousel-caption">
+            <h1>List of Competitions </h1>
             <div class="list-group">
-                <h3>${result[i].caption}</h3>
+                <h3>${result[i].caption}(${result[i].league})-${result[i].year}</h3>
                 <ul>
-                  <li class="list-group-item">Season: <span class="badge">${result[i].year}</span></li>
-                  <li class="list-group-item">Name:<span class="badge">${result[i].caption}</li>
-                  <li class="list-group-item">League:<span class="badge">${result[i].league}</span></li>
                   <li class="list-group-item">Numbers of Teams:<span class="badge">${result[i].numberOfTeams}</span></li>
                   <li class="list-group-item">Number of Games:<span class="badge">${result[i].numberOfGames}</span></li>
                   <li class="list-group-item">Number of Match days:<span class="badge">${result[i].numberOfMatchdays}</span></li>
                   <li class="list-group-item">Curent Match  day:<span class="badge">${result[i].currentMatchday}</span></li>
+                  <a href="#" class="list-group-item js-listTeams" data-id=${result[i].id}>List of Teams</a>
+                  <a href="#" class="list-group-item js-leagueTable" data-id=${result[i].id}>League Table</a>
                 </ul>
-                <a href="#" class="list-group-item js-listTeams" data-id=${result[i].id}>List of Teams</a>
-                <a href="#" class="list-group-item js-leagueTable" data-id=${result[i].id}>League Table</a>
+            </div>  <!--close list-group-->
             </div>
-        </div>`
+        </div> <!--close item -->` 
     }
 
     html +=`
+    </div> <!--close carousel-inner--> 
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="glyphicon glyphicon-chevron-left"></span>
         <span class="sr-only">Previous</span>
@@ -56,7 +57,8 @@ function renderResult(result) {
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
-    </div>`; // close <div class="carousel-inner" > 
+    
+    </div>`; //close myCarousel 
 
   return html;    
 }
@@ -92,17 +94,15 @@ function renderListTeam(result) {
     let len = result.teams.length;
     if(len === 0){
         let html =`
-        <h1></h1>
+        <h1>List of Teams</h1>
         <h3>List of Teams is empty at this time</h3>
         <button type="button" class="GoBackToCompetitions">List of Teams</button>;`
         return html;
     }
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <h1>List of Teams </h1>
     <ol class="carousel-indicators competition" >`
     for(let i=0; i<len; i++) { 
-        $(".js_search_results").attr("style",`background:url(${result.teams[i].crestUrl})`);
         if (i === 0) {
             html += `<li data-target="#myCarousel" data-slide-to=${i} class="active"></li>`
         }
@@ -120,21 +120,31 @@ function renderListTeam(result) {
         else{
             html += `<div class="item ">`
         }
+        
+        if(result.teams[i].crestUrl == null){
+            html += `<img src="http://www.mannersmattercanada.com/Blank_World_Map.jpg" alt="" class="imageItem">`
+        }else{
+            html+= `<img src= alt="${result.teams[i].crestUrl}" class="imageItem">`
+        }
         html += `
-            <div class="list-group">
-                <h3>${result.teams[i].name}</h3>
-                <ul>
-                  <li class="list-group-item">Team Short Name: <span class="badge">${result.teams[i].shortName}</span></li>
-                  <li class="list-group-item">Squad Market Value:<span class="badge">${result.teams[i].squadMarketValue}</span></li>
-                  <a href="#" class="list-group-item js-listFixtures" data-id=${result.teams[i].id}>List of Fixtures</a> 
-                  <a href="#" class="list-group-item js-listPlayers" data-url=${result.teams[i]._links.players.href} 
-                  name=${result.teams[i].name} url= ${result.teams[i].crestUrl}>Players of this Team</a>
-                </ul>
+            <div class="carousel-caption">
+                <h1>List of Teams </h1>
+                <div class="list-group">
+                    <h3>${result.teams[i].name}</h3>
+                    <ul>
+                      <li class="list-group-item">Team Short Name: <span class="badge">${result.teams[i].shortName}</span></li>
+                      <li class="list-group-item">Squad Market Value:<span class="badge">${result.teams[i].squadMarketValue}</span></li>
+                      <a href="#" class="list-group-item js-listFixtures" data-id=${result.teams[i].id}>List of Fixtures</a> 
+                      <a href="#" class="list-group-item js-listPlayers" data-url=${result.teams[i]._links.players.href} 
+                      name=${result.teams[i].name} url= ${result.teams[i].crestUrl}>Players of this Team</a>
+                    </ul>
+                </div>
             </div>
         </div>`
     }
 
     html +=`
+    </div>
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="glyphicon glyphicon-chevron-left"></span>
         <span class="sr-only">Previous</span>
@@ -143,8 +153,12 @@ function renderListTeam(result) {
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
-    <button type="button" class="GoBackToCompetitions">List of Competitions</button>
-    </div>`; // close <div class="carousel-inner" > 
+    </div>
+
+    <div>
+     <button type="button" class="GoBackToCompetitions">List of Competitions</button>
+    </div>`;
+
 
   return html;    
 }
@@ -186,7 +200,6 @@ function renderLeagueTable(result) {
 
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <h1>${result.leagueCaption}:League Table </h1>
         <ol class="carousel-indicators competition" >`
         for(let i=0; i<len; i++) {
             if (i === 0) {
@@ -203,31 +216,40 @@ function renderLeagueTable(result) {
         for(let i=0; i<len; i++){
             $(".js_search_results").attr("style",`background:url(${result.standing[i].crestUrl})`);
             if (i == 0){
-                html += `
-            <div class="item active" )">`
+                html += `<div class="item active" )">`
             }
             else{
-                html += `
-                <div class="item ">`
+                html += `<div class="item ">`
+            }
+
+           if(result.standing[i].crestUrl == null){
+                html += `<img src="http://www.mannersmattercanada.com/Blank_World_Map.jpg" alt="" class="imageItem">`
+            }
+            else{
+                html+= `<img src= alt="${result.standing[i].crestUrl}" class="imageItem">`
             }
             html += `
-                <div class="list-group">
-                    <h3>${result.standing[i].position}.) ${result.standing[i].teamName} ** ${result.matchday}th Match day</h3>
-                    <ul>
-                      <li class="list-group-item">PlayedGames<span class="badge"> ${result.standing[i].playedGames}</span></li>
-                      <li class="list-group-item">Points:<span class="badge">${result.standing[i].points}</span></li>
-                      <li class="list-group-item">Goals:<span class="badge">${result.standing[i].goals}</span></li>
-                      <li class="list-group-item">Goals Against:<span class="badge">${result.standing[i].goalsAgainst}</span></li>
-                      <li class="list-group-item">goal Difference:<span class="badge">${result.standing[i].goalDifference}</span></li>
-                      <li class="list-group-item">Number of Games win:<span class="badge">${result.standing[i].wins}</span></li>
-                      <li class="list-group-item">Number of Games draws:<span class="badge">${result.standing[i].wins}</span></li>
-                      <li class="list-group-item">Number of Games losses:<span class="badge">${result.standing[i].losses}</span></li>
-                    </ul>
+                <div class="carousel-caption">
+                    <h1>${result.leagueCaption}:League Table </h1>
+                    <div class="list-group">
+                        <h3>${result.standing[i].position}.) ${result.standing[i].teamName} ** ${result.matchday}th Match day</h3>
+                        <ul>
+                          <li class="list-group-item">PlayedGames<span class="badge"> ${result.standing[i].playedGames}</span></li>
+                          <li class="list-group-item">Points:<span class="badge">${result.standing[i].points}</span></li>
+                          <li class="list-group-item">Goals:<span class="badge">${result.standing[i].goals}</span></li>
+                          <li class="list-group-item">Goals Against:<span class="badge">${result.standing[i].goalsAgainst}</span></li>
+                          <li class="list-group-item">goal Difference:<span class="badge">${result.standing[i].goalDifference}</span></li>
+                          <li class="list-group-item">Number of Games win:<span class="badge">${result.standing[i].wins}</span></li>
+                          <li class="list-group-item">Number of Games draws:<span class="badge">${result.standing[i].wins}</span></li>
+                          <li class="list-group-item">Number of Games losses:<span class="badge">${result.standing[i].losses}</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>`
         }
 
         html +=`
+        </div>
         <a class="left carousel-control" href="#myCarousel" data-slide="prev">
             <span class="glyphicon glyphicon-chevron-left"></span>
             <span class="sr-only">Previous</span>
@@ -236,11 +258,11 @@ function renderLeagueTable(result) {
             <span class="glyphicon glyphicon-chevron-right"></span>
             <span class="sr-only">Next</span>
         </a>
-        
     </div>
 
+    <div>
         <button type="button" class="GoBackToCompetitions">List of Competitions</button>
-    </div>`; // close <div class="carousel-inner" > 
+    </div>`; 
     
   return html;    
 }
@@ -281,8 +303,7 @@ function renderPlayers(result, teamName, imgTeam) {
 
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <h1>List of Players </h1>
-    <ol class="carousel-indicators competition" >`
+        <ol class="carousel-indicators competition" >`
     for(let i=0; i<len; i++) {
         if (i === 0) {
             html += `<li data-target="#myCarousel" data-slide-to=${i} class="active"></li>`
@@ -291,33 +312,45 @@ function renderPlayers(result, teamName, imgTeam) {
             html += `<li data-target="#myCarousel" data-slide-to=${i}></li>`
         }
     }
-    html += `</ol>
-    <div class="carousel-inner" >`
+        html += `
+        </ol>
+        <div class="carousel-inner" >`
 
     for(let i=0; i<len; i++){
         if (i == 0){
-            html += `<div class="item active" style="background:url(${imgTeam}')">`
+            html += `<div class="item active">`
         }
         else{
             html += `<div class="item ">`
         }
+
+        if(imgTeam == null){
+             html += `<img src="http://www.mannersmattercanada.com/Blank_World_Map.jpg" alt="" class="imageItem">`
+        }
+        else{
+            html+= `<img src= alt="${imgTeam}" class="imageItem">`
+        }
         html += `
-            <div class="list-group">
-                <h3>${teamName}</h3>
-                <ul>
-                  <li class="list-group-item">name: <span class="badge">${result.players[i].name}</span></li>
-                  <li class="list-group-item">Position:<span class="badge">${result.players[i].position}</li>
-                  <li class="list-group-item">Jersey Number:<span class="badge">${result.players[i].jerseyNumber}</span></li>
-                  <li class="list-group-item">dateOfBirth:<span class="badge">${result.players[i].dateOfBirth}</span></li>
-                  <li class="list-group-item">nationality:<span class="badge">${result.players[i].nationality}</span></li>
-                  <li class="list-group-item">contractUntil:<span class="badge">${result.players[i].contractUntil}</span></li>
-                  <li class="list-group-item">marketValue:<span class="badge">${result.players[i].marketValue}</span></li>
-                  </ul>
+            <div class="carousel-caption">
+                <h1>List of Players </h1>
+                <div class="list-group">
+                    <h3>${teamName}</h3>
+                    <ul>
+                      <li class="list-group-item">name: <span class="badge">${result.players[i].name}</span></li>
+                      <li class="list-group-item">Position:<span class="badge">${result.players[i].position}</li>
+                      <li class="list-group-item">Jersey Number:<span class="badge">${result.players[i].jerseyNumber}</span></li>
+                      <li class="list-group-item">dateOfBirth:<span class="badge">${result.players[i].dateOfBirth}</span></li>
+                      <li class="list-group-item">nationality:<span class="badge">${result.players[i].nationality}</span></li>
+                      <li class="list-group-item">contractUntil:<span class="badge">${result.players[i].contractUntil}</span></li>
+                      <li class="list-group-item">marketValue:<span class="badge">${result.players[i].marketValue}</span></li>
+                    </ul>
+                </div>
             </div>
         </div>`
     }
 
     html +=`
+    </div>
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="glyphicon glyphicon-chevron-left"></span>
         <span class="sr-only">Previous</span>
@@ -326,8 +359,11 @@ function renderPlayers(result, teamName, imgTeam) {
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
-     <button type="button" class="GoBackToTeams">List of Teams</button>
-    </div>`; // close <div class="carousel-inner" > 
+    </div> 
+
+    <div>
+     <button type="button" class="GoBackToCompetitions">List of Competitions</button>
+    </div>`; 
 
   return html;    
 }
@@ -390,11 +426,12 @@ function watchSubmit(){
     });
 
      $("#js_search_results").on("click", ".js-listPlayers" , function(event){
+        console.log("target: "+event.currentTarget)
         let playersUrl = $(event.currentTarget).attr("data-url");
         let teamName = $(event.currentTarget).attr("name");
         let ImgTeam = $(event.currentTarget).attr("url");
-        console.log(teamName);
-        console.log(ImgTeam);
+        console.log("url: "+playersUrl);
+        console.log("team Name: "+ ImgTeam);
         getListPlayersFromApi(playersUrl, teamName, ImgTeam);
     });
 
