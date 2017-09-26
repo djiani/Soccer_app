@@ -65,12 +65,9 @@ function renderResult(result) {
 
 function displayCompetitionData(data){
     let list_competition = renderResult(data);
-    $('#js_search_results').html(list_competition);
+    $('#js_search_results').empty().append(list_competition).prop('hidden', false);
 }
 
-function fails(data){
-    alert("error list of Competitions");    
-}
 
 function getListCompetitionFromApi(year){
     $.ajax({
@@ -165,7 +162,7 @@ function renderListTeam(result) {
 
 function displayTeamsData(data){
     let list_Teams = renderListTeam(data);
-    $('#js_search_results').html(list_Teams);
+    $('#js_search_results').empty().append(list_Teams).prop('hidden', false);
 }
 //request list of teams form the server; 
 //paramns: compId: competition Id 
@@ -269,7 +266,7 @@ function renderLeagueTable(result) {
 
 function displayLeagueTableData(data){
     let list_league = renderLeagueTable(data);
-    $('#js_search_results').html(list_league);
+    $('#js_search_results').empty().append(list_league).prop('hidden', false);
 }
 
 
@@ -370,7 +367,7 @@ function renderPlayers(result, teamName, imgTeam) {
 
 function displayListPlayersData(data, teamName, imgTeam){
     let list_Players = renderPlayers(data, teamName, imgTeam);
-    $('#js_search_results').html(list_Players);
+    $('#js_search_results').empty().append(list_Players).prop('hidden', false);
 }
 //request list of teams form the server; 
 //paramns: compId: competition Id 
