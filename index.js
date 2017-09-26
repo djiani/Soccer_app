@@ -2,7 +2,7 @@ const API_KEY = "4152f4d3d94a4491b7c977c606012179";
 //const GSC_SEARCH_URL =`https://api.data.gov/gsa/auctions?api_key=${DEMO_KEY}&format=JSON`;
 ////url: 'http://api.football-data.org/v1/fixtures?timeFrame=n1',
 let SeasonComp = 2017;
-//let compId = 0;
+let competitionId = 444;
 
 
 function renderResult(result) {
@@ -31,7 +31,7 @@ function renderResult(result) {
         }
         html += `
             <div class="list-group">
-                <h2>${result[i].caption}</h2>
+                <h3>${result[i].caption}</h3>
                 <ul>
                   <li class="list-group-item">Season: <span class="badge">${result[i].year}</span></li>
                   <li class="list-group-item">Name:<span class="badge">${result[i].caption}</li>
@@ -66,27 +66,43 @@ function displayCompetitionData(data){
     $('#js_search_results').html(list_competition);
 }
 
+function fails(data){
+    alert("error list of Competitions");    
+}
+
 function getListCompetitionFromApi(year){
     $.ajax({
       headers: { 'X-Auth-Token': API_KEY },
       url: `http://api.football-data.org/v1/competitions/?season=${year}`,
       dataType: 'json',
       type: 'GET',
-    }).done(function(response) {
-        //control check on data
+      success: function(response){
+        console.log("list of Competitions");
+        console.log(response);
         displayCompetitionData(response);
-        //console.log(response);
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown){
+           alert("textStatus:"+textStatus +" errorThrown:"+ errorThrown);
+        }
     }); 
 }
 
 /*List of the Teams of a sepecific competition and season*/
 function renderListTeam(result) {
     let len = result.teams.length;
+    if(len === 0){
+        let html =`
+        <h1></h1>
+        <h3>List of Teams is empty at this time</h3>
+        <button type="button" class="GoBackToCompetitions">List of Teams</button>;`
+        return html;
+    }
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <h1>List of Teams </h1>
     <ol class="carousel-indicators competition" >`
-    for(let i=0; i<len; i++) {
+    for(let i=0; i<len; i++) { 
+        $(".js_search_results").attr("style",`background:url(${result.teams[i].crestUrl})`);
         if (i === 0) {
             html += `<li data-target="#myCarousel" data-slide-to=${i} class="active"></li>`
         }
@@ -99,14 +115,14 @@ function renderListTeam(result) {
 
     for(let i=0; i<len; i++){
         if (i == 0){
-            html += `<div class="item active" style="background:url(${result.teams[i].crestUrl});">`
+            html += `<div class="item active">`
         }
         else{
             html += `<div class="item ">`
         }
         html += `
             <div class="list-group">
-                <h2>${result.teams[i].name}</h2>
+                <h3>${result.teams[i].name}</h3>
                 <ul>
                   <li class="list-group-item">Team Short Name: <span class="badge">${result.teams[i].shortName}</span></li>
                   <li class="list-group-item">Squad Market Value:<span class="badge">${result.teams[i].squadMarketValue}</span></li>
@@ -127,6 +143,7 @@ function renderListTeam(result) {
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
+    <button type="button" class="GoBackToCompetitions">List of Competitions</button>
     </div>`; // close <div class="carousel-inner" > 
 
   return html;    
@@ -140,74 +157,91 @@ function displayTeamsData(data){
 //paramns: compId: competition Id 
 function getListTeamsFromApi(compId){
     $.ajax({
-      headers: { 'X-Auth-Token': API_KEY },
-      url: `http://api.football-data.org/v1/competitions/${compId}/teams`,
-      dataType: 'json',
-      type: 'GET',
-    }).done(function(response) {
-        //control check on data
-        displayTeamsData(response);
-        //console.log(response);
+        headers: { 'X-Auth-Token': API_KEY },
+        url: `http://api.football-data.org/v1/competitions/${compId}/teams`,
+        dataType: 'json',
+        type: 'GET',
+        success:function(response) {
+            console.log("list of Teams");
+            console.log(response);
+            displayTeamsData(response);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+           alert("textStatus:"+textStatus +" errorThrown:"+ errorThrown);
+        }
+
     }); 
 }
 
 /*List League Table */
 function renderLeagueTable(result) {
     let len = result.standing.length;
+    if(len === 0){
+        let html =`
+        <h1> ${result.leagueCaption}</h1>
+        <h3>League Table is empty at this time</h3>
+        <button type="button" class="GoBackToCompetitions">List of Teams</button>;`
+        return html;
+    }
+
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <h1>League Table </h1>
-    <ol class="carousel-indicators competition" >`
-    for(let i=0; i<len; i++) {
-        if (i === 0) {
-            html += `<li data-target="#myCarousel" data-slide-to=${i} class="active"></li>`
-        }
-        else{
-            html += `<li data-target="#myCarousel" data-slide-to=${i}></li>`
-        }
-    }
-    html += `</ol>
-    <div class="carousel-inner" >`
-
-    for(let i=0; i<len; i++){
-        if (i == 0){
-            html += `<div class="item active" style="background:url(${result.standing[i].crestUrl}')">`
-        }
-        else{
-            html += `<div class="item ">`
+        <h1>${result.leagueCaption}:League Table </h1>
+        <ol class="carousel-indicators competition" >`
+        for(let i=0; i<len; i++) {
+            if (i === 0) {
+                html += `<li data-target="#myCarousel" data-slide-to=${i} class="active"></li>`
+            }
+            else{
+                html += `<li data-target="#myCarousel" data-slide-to=${i}></li>`
+            }
         }
         html += `
-            <div class="list-group">
-                <h2>${result.leagueCaption} Match Day: ${result.matchday}</h2>
-                <ul>
-                  <li class="list-group-item">position: <span class="badge">${result.standing[i].position}</span></li>
-                  <li class="list-group-item">team Name:<span class="badge">${result.standing[i].teamName}</li>
-                  <li class="list-group-item">Played Games:<span class="badge">${result.standing[i].playedGames}</span></li>
-                  <li class="list-group-item">Points:<span class="badge">${result.standing[i].points}</span></li>
-                  <li class="list-group-item">Goals:<span class="badge">${result.standing[i].goals}</span></li>
-                  <li class="list-group-item">Goals Against:<span class="badge">${result.standing[i].goalsAgainst}</span></li>
-                  <li class="list-group-item">goal Difference:<span class="badge">${result.standing[i].goalDifference}</span></li>
-                  <li class="list-group-item">Number of Games win:<span class="badge">${result.standing[i].wins}</span></li>
-                  <li class="list-group-item">Number of Games draws:<span class="badge">${result.standing[i].wins}</span></li>
-                  <li class="list-group-item">Number of Games losses:<span class="badge">${result.standing[i].losses}</span></li>
-                  </ul>
-            </div>
-        </div>`
-    }
+        </ol>
+        <div class="carousel-inner" >`
 
-    html +=`
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right"></span>
-        <span class="sr-only">Next</span>
-    </a>
-    
+        for(let i=0; i<len; i++){
+            $(".js_search_results").attr("style",`background:url(${result.standing[i].crestUrl})`);
+            if (i == 0){
+                html += `
+            <div class="item active" )">`
+            }
+            else{
+                html += `
+                <div class="item ">`
+            }
+            html += `
+                <div class="list-group">
+                    <h3>${result.standing[i].position}.) ${result.standing[i].teamName} ** ${result.matchday}th Match day</h3>
+                    <ul>
+                      <li class="list-group-item">PlayedGames<span class="badge"> ${result.standing[i].playedGames}</span></li>
+                      <li class="list-group-item">Points:<span class="badge">${result.standing[i].points}</span></li>
+                      <li class="list-group-item">Goals:<span class="badge">${result.standing[i].goals}</span></li>
+                      <li class="list-group-item">Goals Against:<span class="badge">${result.standing[i].goalsAgainst}</span></li>
+                      <li class="list-group-item">goal Difference:<span class="badge">${result.standing[i].goalDifference}</span></li>
+                      <li class="list-group-item">Number of Games win:<span class="badge">${result.standing[i].wins}</span></li>
+                      <li class="list-group-item">Number of Games draws:<span class="badge">${result.standing[i].wins}</span></li>
+                      <li class="list-group-item">Number of Games losses:<span class="badge">${result.standing[i].losses}</span></li>
+                    </ul>
+                </div>
+            </div>`
+        }
+
+        html +=`
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+        
     </div>
-    <button type="button" class="buttonLeague">Go Back </button>`; // close <div class="carousel-inner" > 
 
+        <button type="button" class="GoBackToCompetitions">List of Competitions</button>
+    </div>`; // close <div class="carousel-inner" > 
+    
   return html;    
 }
 
@@ -223,16 +257,28 @@ function getLeagueTableFromApi(compId){
       url: `http://api.football-data.org/v1/competitions/${compId}/leagueTable`,
       dataType: 'json',
       type: 'GET',
-    }).done(function(response) {
-        //control check on data
+      success: function(response) {
+        console.log("Table League");
+        console.log(response);
         displayLeagueTableData(response);
-        //console.log(response);
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown){
+           alert("textStatus:"+textStatus +" errorThrown:"+ errorThrown);
+        }
     }); 
 }
 
 /*List of Players */
 function renderPlayers(result, teamName, imgTeam) {
     let len = result.players.length;
+    if(len === 0){
+        let html =`
+        <h1> ${teamName}</h1>
+        <h3>List of players for this team is empty at this time</h3>
+        <button type="button" class="GoBackToTeams">List of Teams</button>;`
+        return html;
+    }
+
     let html =` 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <h1>List of Players </h1>
@@ -257,7 +303,7 @@ function renderPlayers(result, teamName, imgTeam) {
         }
         html += `
             <div class="list-group">
-                <h2>${teamName}</h2>
+                <h3>${teamName}</h3>
                 <ul>
                   <li class="list-group-item">name: <span class="badge">${result.players[i].name}</span></li>
                   <li class="list-group-item">Position:<span class="badge">${result.players[i].position}</li>
@@ -280,6 +326,7 @@ function renderPlayers(result, teamName, imgTeam) {
         <span class="glyphicon glyphicon-chevron-right"></span>
         <span class="sr-only">Next</span>
     </a>
+     <button type="button" class="GoBackToTeams">List of Teams</button>
     </div>`; // close <div class="carousel-inner" > 
 
   return html;    
@@ -297,12 +344,23 @@ function getListPlayersFromApi(teamUrl, teamName, imgTeam){
       url: teamUrl,
       dataType: 'json',
       type: 'GET',
-    }).done(function(response) {
-        //control check on data
+      success: function(response) {
+        console.log("List of Players");
+         console.log(response);
         displayListPlayersData(response, teamName, imgTeam);
-        //console.log(response);
+        },
+      error: function(XMLHttpRequest, textStatus, errorThrown){
+            alert("textStatus:"+textStatus +" errorThrown:"+ errorThrown);
+        }
     }); 
 }
+
+function getCompettion(response){
+    console.log("list of Competitions");
+    console.log(response);
+    displayCompetitionData(response);
+}
+
 
 function watchSubmit(){
     $('.js_search_form').submit(event => {
@@ -315,9 +373,16 @@ function watchSubmit(){
     });
 
     $("#js_search_results").on("click", ".js-listTeams" , function(event){
-        let compId = $(event.currentTarget).attr("data-id");
-        getListTeamsFromApi(compId);
+        competitionId = $(event.currentTarget).attr("data-id");
+        getListTeamsFromApi(competitionId);
     });
+
+    $("#js_search_results").on("click", ".js-listFixtures" , function(event){
+        competitionId = $(event.currentTarget).attr("data-id");
+        alert("The List of Fixtures is not yet implemnted");
+        //getListTeamsFromApi(competitionId);
+    });
+
 
     $("#js_search_results").on("click", ".js-leagueTable" , function(event){
         let compId = $(event.currentTarget).attr("data-id");
@@ -333,9 +398,14 @@ function watchSubmit(){
         getListPlayersFromApi(playersUrl, teamName, ImgTeam);
     });
 
-     $("#js_search_results").on("click", ".buttonLeague" , function(event){
+    $("#js_search_results").on("click", ".GoBackToCompetitions" , function(event){
         getListCompetitionFromApi(SeasonComp);
     });
+
+    $("#js_search_results").on("click", ".GoBackToTeams" , function(event){
+        getListTeamsFromApi(competitionId);
+    });
+     
 }
 
 

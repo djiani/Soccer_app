@@ -3,26 +3,44 @@ body {
   background: url("http://www.uefa.com/MultimediaFiles/Photo/competitions/Draws/02/27/60/30/2276030_w1.jpg");
 }
 
-#css_main {
-	margin-top: 0px;
-	border: 2px solid black;
-	height: 500px;
-	text-align: center;
+.container {
+	/*border: 1px solid black;*/
+	height: 680px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 #js_search_results {
+	height: 100%;
 	background-color: gray;
+	opacity:0.9;
 	margin-left: auto;
 	margin-right: auto;
+	text-align: center;
+	padding: 0px;
+	margin-top:  20px;
+}
+
+.carousel{
+	height: 100%;
+	top:0px;
 }
 
 .jumbotron {
 	text-align: center;
+	margin-bottom: 0px;
 }
+.jumbotron>h1{
+	color:green;
+}
+
+.jumbotron > form> button{
+	width: 200px;
+}
+
 
 .competition {
 	background-color: green;
-	bottom: 0px;
 }
 
 .list-group {
@@ -33,4 +51,35 @@ body {
 
 ul {
 	padding-left: 0;
+}
+
+.badge{
+	background-color: green;
+	font-size: 1.2em;
+
+}
+
+.list-group-item{
+	text-align: left;
+	font-size: 1.6em;
+	color:#001a00;
+}
+h1, h3{
+	color:#001a00;
+}
+a.list-group-item:nth-child(even){
+	background-color: yellow;
+	text-decoration: underline;
+}
+
+a.list-group-item:nth-child(odd){
+	background-color: red;
+	text-decoration: underline;
+}
+
+button.GoBackToTeams, button.GoBackToCompetitions{
+	width: 300px;
+	height:60px;
+	border-radius: 10px;
+
 }
