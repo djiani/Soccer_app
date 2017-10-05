@@ -118,7 +118,7 @@ function renderListTeam(result) {
             html += `<div class="item ">`
         }
         
-        if(result.teams[i].crestUrl == null){
+        if(result.teams[i].crestUrl == null ){
             html += `<img src="http://www.mannersmattercanada.com/Blank_World_Map.jpg" alt="" class="imageItem">`
         }else{
             html+= `<img src= alt="${result.teams[i].crestUrl}" class="imageItem">`
@@ -131,7 +131,7 @@ function renderListTeam(result) {
                     <ul>
                       <li class="list-group-item">Team Short Name: <span class="badge">${result.teams[i].shortName}</span></li>
                       <li class="list-group-item">Squad Market Value:<span class="badge">${result.teams[i].squadMarketValue}</span></li>
-                      <a href="#" class="list-group-item js-listFixtures" data-id=${result.teams[i].id}>List of Fixtures</a> 
+                     <!-- <a href="#" class="list-group-item js-listFixtures" data-id=${result.teams[i].id}>List of Fixtures</a> -->
                       <a href="#" class="list-group-item js-listPlayers" data-url=${result.teams[i]._links.players.href} 
                       name=${result.teams[i].name} url= ${result.teams[i].crestUrl}>Players of this Team</a>
                     </ul>
@@ -211,7 +211,10 @@ function renderLeagueTable(result) {
         <div class="carousel-inner" >`
 
         for(let i=0; i<len; i++){
-            $(".js_search_results").attr("style",`background:url(${result.standing[i].crestUrl})`);
+            if(result.standing[i].crestUrl != null){
+                $(".js_search_results").attr("style",`background:url(${result.standing[i].crestUrl})`);
+            }
+            
             if (i == 0){
                 html += `<div class="item active" )">`
             }
@@ -288,7 +291,7 @@ function getLeagueTableFromApi(compId){
 }
 
 /*List of Players */
-function renderPlayers(result, teamName, imgTeam) {
+function renderPlayers(result, teamName, imgTeam){
     let len = result.players.length;
     if(len === 0){
         let html =`
